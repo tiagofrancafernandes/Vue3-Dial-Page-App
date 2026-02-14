@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism styles */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+}
+
+.dark .glass {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: all 300ms ease;
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-card:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Form inputs */
+.input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #111827;
+    transition: all 200ms;
+}
+
+.dark .input-field {
+    border-color: #4b5563;
+    background: #1f2937;
+    color: white;
+}
+
+.input-field:focus {
+    outline: none;
+    ring: 2px;
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* Button styles */
+.btn-primary {
+    padding: 0.5rem 1rem;
+    background: #2563eb;
+    color: white;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 200ms;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* Animations */
+.edit-mode .favorite-card {
+    animation: shake 0.5s ease-in-out;
+}
+
+.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-2deg);
+    }
+    75% {
+        transform: rotate(2deg);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
