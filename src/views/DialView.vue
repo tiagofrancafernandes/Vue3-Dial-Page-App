@@ -14,7 +14,14 @@
         </div>
 
         <!-- Header -->
-        <header class="relative z-10 flex justify-between items-center p-6">
+        <header
+            :class="[
+                'z-20 flex justify-between items-center p-6 transition-all duration-300',
+                isNavbarFixed
+                    ? 'fixed top-0 left-0 right-0 backdrop-blur-md bg-white/75 dark:bg-gray-900/65 border-b border-black/5 dark:border-white/10'
+                    : 'relative',
+            ]"
+        >
             <div class="flex items-center gap-3">
                 <div
                     class="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg"
@@ -58,7 +65,12 @@
         </header>
 
         <!-- Main Content -->
-        <main class="relative z-10 container mx-auto px-6 pt-8 md:pt-16 pb-20 max-w-5xl">
+        <main
+            :class="[
+                'relative z-10 container mx-auto px-6 pb-20 max-w-5xl transition-all duration-300',
+                isNavbarFixed ? 'pt-28 md:pt-32' : 'pt-8 md:pt-16',
+            ]"
+        >
             <!-- Clock -->
             <ClockWidget />
 
@@ -70,14 +82,14 @@
         </main>
 
         <!-- Modals -->
-        <EngineModal v-if="showEngineModal" @close="showEngineModal = false" />
-        <FavoriteModal v-if="showFavoriteModal" @close="showFavoriteModal = false" />
-        <SettingsModal v-if="showSettings" @close="showSettings = false" />
+        <EngineModal v-if="showEngineModal" :edit-data="engineModalEditData" @close="closeEngineModal" />
+        <FavoriteModal v-if="showFavoriteModal" :edit-data="favoriteModalEditData" @close="closeFavoriteModal" />
+        <SettingsModal v-if="showSettings" @close="showSettings = false" @open-engine-modal="openEngineModalFromSettings" />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useDialStore } from '@/stores/dialStore';
 import { toast } from 'vue3-toastify';
@@ -90,10 +102,27 @@ import FavoriteModal from '@/components/FavoriteModal.vue';
 import SettingsModal from '@/components/SettingsModal.vue';
 
 const store = useDialStore();
-const { isDark, isEditMode, showSettings } = storeToRefs(store);
+const { isDark, isEditMode, showSettings, isNavbarFixed } = storeToRefs(store);
 
 const showEngineModal = ref(false);
 const showFavoriteModal = ref(false);
+const engineModalEditData = ref(null);
+const favoriteModalEditData = ref(null);
+
+const closeEngineModal = () => {
+    showEngineModal.value = false;
+    engineModalEditData.value = null;
+};
+
+const closeFavoriteModal = () => {
+    showFavoriteModal.value = false;
+    favoriteModalEditData.value = null;
+};
+
+const openEngineModalFromSettings = (engine = null) => {
+    engineModalEditData.value = engine;
+    showEngineModal.value = true;
+};
 
 const toggleEditMode = () => {
     isEditMode.value = !isEditMode.value;
@@ -104,17 +133,30 @@ const toggleEditMode = () => {
     }
 };
 
+const handleOpenEngineModal = (event) => {
+    engineModalEditData.value = event?.detail || null;
+    showEngineModal.value = true;
+};
+
+const handleOpenFavoriteModal = (event) => {
+    favoriteModalEditData.value = event?.detail || null;
+    showFavoriteModal.value = true;
+};
+
+const handleEditFavoriteModal = (event) => {
+    favoriteModalEditData.value = event?.detail || null;
+    showFavoriteModal.value = true;
+};
+
 onMounted(() => {
-    window.addEventListener('open-engine-modal', () => {
-        showEngineModal.value = true;
-    });
+    window.addEventListener('open-engine-modal', handleOpenEngineModal);
+    window.addEventListener('open-favorite-modal', handleOpenFavoriteModal);
+    window.addEventListener('edit-favorite-modal', handleEditFavoriteModal);
+});
 
-    window.addEventListener('open-favorite-modal', () => {
-        showFavoriteModal.value = true;
-    });
-
-    window.addEventListener('edit-favorite-modal', (e) => {
-        showFavoriteModal.value = true;
-    });
+onUnmounted(() => {
+    window.removeEventListener('open-engine-modal', handleOpenEngineModal);
+    window.removeEventListener('open-favorite-modal', handleOpenFavoriteModal);
+    window.removeEventListener('edit-favorite-modal', handleEditFavoriteModal);
 });
 </script>

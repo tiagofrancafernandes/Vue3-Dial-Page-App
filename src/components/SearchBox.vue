@@ -1,9 +1,9 @@
 <template>
     <div class="max-w-2xl mx-auto mb-12 md:mb-16 relative animate-slide-up">
         <div class="glass rounded-2xl p-2 shadow-2xl ring-1 ring-black/5">
-            <div class="flex items-center bg-white/50 dark:bg-black/30 rounded-xl overflow-hidden">
+            <div class="flex items-center bg-white/50 dark:bg-black/30 rounded-xl overflow-visible">
                 <!-- Search Engine Selector -->
-                <div class="relative">
+                <div class="relative z-[70]">
                     <button
                         @click="toggleDropdown"
                         class="flex items-center gap-2 px-3 sm:px-4 py-3 sm:py-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors min-w-[120px] sm:min-w-[140px]"
@@ -34,7 +34,7 @@
                     >
                         <div
                             v-if="showDropdown"
-                            class="absolute top-full left-0 mt-2 w-64 sm:w-72 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 max-h-[60vh] overflow-y-auto"
+                            class="absolute top-full left-0 mt-2 w-64 sm:w-72 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-[80] max-h-[60vh] overflow-y-auto"
                         >
                             <div class="p-2">
                                 <div
@@ -42,7 +42,7 @@
                                     :key="engine.id"
                                     @click="selectEngine(engine)"
                                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
-                                    :class="{ 'bg-primary-50 dark:bg-primary-900/20': selectedEngine.id === engine.id }"
+                                    :class="{ 'bg-primary-50 dark:bg-primary-900/20': isEngineSelected(engine) }"
                                 >
                                     <img
                                         :src="engine.icon"
@@ -52,10 +52,7 @@
                                     <span class="text-gray-700 dark:text-gray-300 text-sm font-medium">
                                         {{ engine.label }}
                                     </span>
-                                    <i
-                                        v-if="selectedEngine.id === engine.id"
-                                        class="fa-solid fa-check text-primary-500 ml-auto text-xs"
-                                    ></i>
+                                    <i v-if="isEngineSelected(engine)" class="fa-solid fa-check text-primary-500 ml-auto text-xs"></i>
                                 </div>
 
                                 <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
@@ -107,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useDialStore } from '@/stores/dialStore';
 import { toast } from 'vue3-toastify';
@@ -128,6 +125,8 @@ const selectEngine = (engine) => {
     toast.success(`Buscador: ${engine.label}`, { autoClose: 2000 });
     searchInput.value?.focus();
 };
+
+const isEngineSelected = (engine) => String(selectedEngine.value?.id) === String(engine.id);
 
 const performSearch = () => {
     if (!searchQuery.value.trim()) {

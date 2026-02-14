@@ -108,6 +108,43 @@
                                 </button>
                             </section>
 
+                            <!-- Layout -->
+                            <section>
+                                <h4
+                                    class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2"
+                                >
+                                    <i class="fa-solid fa-window-maximize text-primary-500"></i>
+                                    Layout
+                                </h4>
+                                <div
+                                    class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl flex items-center justify-between gap-4"
+                                >
+                                    <div>
+                                        <p class="text-gray-800 dark:text-gray-200 font-medium">Navbar fixada?</p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            Quando ativa, a barra superior acompanha a rolagem.
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        @click="toggleNavbarFixed"
+                                        :class="[
+                                            'relative inline-flex h-7 w-12 items-center rounded-full transition-colors',
+                                            isNavbarFixed ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600',
+                                        ]"
+                                        :aria-pressed="isNavbarFixed"
+                                        aria-label="Alternar navbar fixada"
+                                    >
+                                        <span
+                                            :class="[
+                                                'inline-block h-5 w-5 transform rounded-full bg-white transition-transform',
+                                                isNavbarFixed ? 'translate-x-6' : 'translate-x-1',
+                                            ]"
+                                        />
+                                    </button>
+                                </div>
+                            </section>
+
                             <!-- Data Management -->
                             <section>
                                 <h4
@@ -168,7 +205,7 @@ import { toast } from 'vue3-toastify';
 const emit = defineEmits(['close', 'open-engine-modal']);
 
 const store = useDialStore();
-const { searchEngines, favorites } = storeToRefs(store);
+const { searchEngines, favorites, isNavbarFixed } = storeToRefs(store);
 const isVisible = ref(false);
 
 const favoritesCount = computed(() => favorites.value.length);
@@ -204,6 +241,10 @@ const editEngine = (engine) => {
     setTimeout(() => {
         emit('open-engine-modal', engine);
     }, 200);
+};
+
+const toggleNavbarFixed = () => {
+    isNavbarFixed.value = !isNavbarFixed.value;
 };
 
 const deleteEngine = (engine) => {

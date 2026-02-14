@@ -62,13 +62,15 @@ export const useDialStore = defineStore('dial', () => {
     const favorites = ref(JSON.parse(localStorage.getItem('dialpage-favorites') || JSON.stringify(defaultFavorites)));
     const selectedEngineId = ref(localStorage.getItem('dialpage-selected-engine') || 'google');
     const isDark = ref(JSON.parse(localStorage.getItem('dialpage-darkmode') || 'false'));
+    const isNavbarFixed = ref(JSON.parse(localStorage.getItem('dialpage-navbar-fixed') || 'false'));
 
     const searchQuery = ref('');
     const isEditMode = ref(false);
     const showSettings = ref(false);
 
     const selectedEngine = computed(() => {
-        return searchEngines.value.find((e) => e.id === selectedEngineId.value) || searchEngines.value[0];
+        const selectedId = String(selectedEngineId.value || '');
+        return searchEngines.value.find((e) => String(e.id) === selectedId) || searchEngines.value[0];
     });
 
     watch(
@@ -96,8 +98,12 @@ export const useDialStore = defineStore('dial', () => {
         updateDocumentClass();
     });
 
+    watch(isNavbarFixed, (newValue) => {
+        localStorage.setItem('dialpage-navbar-fixed', JSON.stringify(newValue));
+    });
+
     const setSearchEngine = (engineId) => {
-        selectedEngineId.value = engineId;
+        selectedEngineId.value = String(engineId);
     };
 
     const addSearchEngine = (engine) => {
@@ -118,9 +124,9 @@ export const useDialStore = defineStore('dial', () => {
     };
 
     const deleteSearchEngine = (id) => {
-        searchEngines.value = searchEngines.value.filter((e) => e.id !== id);
-        if (selectedEngineId.value === id) {
-            selectedEngineId.value = searchEngines.value[0]?.id || '';
+        searchEngines.value = searchEngines.value.filter((e) => String(e.id) !== String(id));
+        if (String(selectedEngineId.value) === String(id)) {
+            selectedEngineId.value = String(searchEngines.value[0]?.id || '');
         }
     };
 
@@ -167,6 +173,7 @@ export const useDialStore = defineStore('dial', () => {
         searchEngines.value = [...defaultEngines];
         favorites.value = [...defaultFavorites];
         selectedEngineId.value = 'google';
+        isNavbarFixed.value = false;
     };
 
     const exportData = () => {
@@ -176,6 +183,7 @@ export const useDialStore = defineStore('dial', () => {
             settings: {
                 selectedEngine: selectedEngineId.value,
                 isDark: isDark.value,
+                isNavbarFixed: isNavbarFixed.value,
             },
         };
     };
@@ -184,8 +192,9 @@ export const useDialStore = defineStore('dial', () => {
         if (data.engines) searchEngines.value = data.engines;
         if (data.favorites) favorites.value = data.favorites;
         if (data.settings) {
-            selectedEngineId.value = data.settings.selectedEngine;
+            selectedEngineId.value = String(data.settings.selectedEngine || '');
             isDark.value = data.settings.isDark;
+            isNavbarFixed.value = Boolean(data.settings.isNavbarFixed);
             updateDocumentClass();
         }
     };
@@ -197,6 +206,7 @@ export const useDialStore = defineStore('dial', () => {
         favorites,
         selectedEngineId,
         isDark,
+        isNavbarFixed,
         searchQuery,
         isEditMode,
         showSettings,

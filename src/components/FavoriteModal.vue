@@ -177,11 +177,47 @@ const handleEscape = (e) => {
     if (e.key === 'Escape') close();
 };
 
-const fetchFavicon = () => {
+const canLoadImage = (src) =>
+    new Promise((resolve) => {
+        const img = new Image();
+        let settled = false;
+
+        const finish = (result) => {
+            if (settled) return;
+            settled = true;
+            resolve(result);
+        };
+
+        const timer = setTimeout(() => finish(false), 3000);
+        img.onload = () => {
+            clearTimeout(timer);
+            finish(true);
+        };
+        img.onerror = () => {
+            clearTimeout(timer);
+            finish(false);
+        };
+        img.src = src;
+    });
+
+const fetchFavicon = async () => {
     try {
-        const url = new URL(form.value.url);
-        form.value.icon = `${url.origin}/favicon.ico`;
-        toast.info('Ícone detectado!', { autoClose: 2000 });
+        const normalizedUrl =
+            form.value.url.startsWith('http://') || form.value.url.startsWith('https://')
+                ? form.value.url
+                : `https://${form.value.url}`;
+        const url = new URL(normalizedUrl);
+        const defaultFavicon = `${url.origin}/favicon.ico`;
+        const googleFallback = `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(url.hostname)}`;
+
+        const hasDefaultFavicon = await canLoadImage(defaultFavicon);
+        form.value.icon = hasDefaultFavicon ? defaultFavicon : googleFallback;
+
+        if (hasDefaultFavicon) {
+            toast.info('Icone detectado automaticamente!', { autoClose: 2000 });
+        } else {
+            toast.info('Icone padrao nao encontrado. Usando fallback do Google.', { autoClose: 2500 });
+        }
     } catch {
         toast.error('URL inválida');
     }
