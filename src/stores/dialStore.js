@@ -8,7 +8,7 @@ const defaultEngines = [
         url: 'https://www.google.com/search?q=%s',
         icon: 'https://www.google.com/favicon.ico',
         method: 'GET',
-        isDefault: true,
+        isDefault: false,
     },
     {
         id: 'bing',
@@ -16,7 +16,7 @@ const defaultEngines = [
         url: 'https://www.bing.com/search?q=%s',
         icon: 'https://www.bing.com/favicon.ico',
         method: 'GET',
-        isDefault: true,
+        isDefault: false,
     },
     {
         id: 'chatgpt',
@@ -24,33 +24,40 @@ const defaultEngines = [
         url: 'https://chat.openai.com/?q=%s',
         icon: 'https://chat.openai.com/favicon.ico',
         method: 'GET',
-        isDefault: true,
+        isDefault: false,
     },
     {
         id: 'chatgpt-temp',
         label: 'ChatGPT Temp',
-        url: 'https://chat.openai.com/?temporary=true&q=%s',
+        // url: 'https://chat.openai.com/?temporary-chat=true&q=%s',
+        url: 'https://chat.openai.com/?temporary-chat=true&prompt=%s',
         icon: 'https://chat.openai.com/favicon.ico',
         method: 'GET',
-        isDefault: true,
+        isDefault: false,
     },
 ];
 
 const defaultFavorites = [
     {
         id: '1',
+        label: 'Google',
+        url: 'https://google.com',
+        icon: 'https://www.google.com/favicon.ico',
+    },
+    {
+        id: '2',
         label: 'GitHub',
         url: 'https://github.com',
         icon: 'https://github.com/favicon.ico',
     },
     {
-        id: '2',
+        id: '3',
         label: 'Gmail',
-        url: 'https://gmail.com',
-        icon: 'https://mail.google.com/favicon.ico',
+        url: 'https://mail.google.com',
+        icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
     },
     {
-        id: '3',
+        id: '4',
         label: 'YouTube',
         url: 'https://youtube.com',
         icon: 'https://www.youtube.com/favicon.ico',

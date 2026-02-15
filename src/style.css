@@ -62,14 +62,13 @@ button:not([disabled]) {
 
 .input-field:focus {
     outline: none;
-    ring: 2px;
-    box-shadow: 0 0 0 2px #3b82f6;
+    box-shadow: none;
 }
 
 /* Button styles */
 .btn-primary {
     padding: 0.5rem 1rem;
-    background: #2563eb;
+    background: #4725f4;
     color: white;
     border-radius: 0.75rem;
     font-weight: 500;
@@ -79,7 +78,7 @@ button:not([disabled]) {
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: #3d1fde;
 }
 
 /* Animations */

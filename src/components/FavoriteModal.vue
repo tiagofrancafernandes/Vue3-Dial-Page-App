@@ -9,7 +9,7 @@
             leave-to-class="opacity-0"
         >
             <div
-                class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                class="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/30 dark:bg-background-dark/60 backdrop-blur-sm p-4"
                 @click="close"
             >
                 <Transition
@@ -22,75 +22,79 @@
                 >
                     <div
                         v-if="isVisible"
-                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 transform"
+                        class="w-full max-w-lg max-h-[90vh] rounded-2xl shadow-2xl transform overflow-hidden flex flex-col border border-white/40 dark:border-white/10 bg-white/80 dark:bg-[#121022]/80 backdrop-blur-xl"
                         @click.stop
                     >
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-white">
-                                {{ isEditing ? 'Editar' : 'Adicionar' }} Favorito
-                            </h3>
+                        <div
+                            class="px-6 py-5 border-b border-slate-200/60 dark:border-white/10 flex justify-between items-center"
+                        >
+                            <div>
+                                <h3 class="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
+                                    {{ isEditing ? 'Editar' : 'Adicionar' }} Favorito
+                                </h3>
+                            </div>
                             <button
                                 @click="close"
-                                class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                class="p-2 hover:bg-slate-200/50 dark:hover:bg-white/10 rounded-full transition-colors group"
                             >
-                                <i class="fa-solid fa-xmark text-xl"></i>
+                                <i
+                                    class="fa-solid fa-xmark text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white"
+                                ></i>
                             </button>
                         </div>
 
-                        <form @submit.prevent="save" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Nome
-                                </label>
+                        <form id="favorite-form" @submit.prevent="save" class="flex-1 overflow-y-auto p-6 space-y-6">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Nome</label>
                                 <input
                                     v-model="form.label"
                                     type="text"
                                     required
-                                    class="input-field"
+                                    class="w-full bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 focus:border-primary-500 transition-all shadow-sm dark:shadow-none"
                                     placeholder="Ex: GitHub"
                                 />
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                    URL
-                                </label>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">URL</label>
                                 <input
                                     v-model="form.url"
                                     type="url"
                                     required
-                                    class="input-field"
+                                    class="w-full bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 focus:border-primary-500 transition-all shadow-sm dark:shadow-none"
                                     placeholder="https://github.com"
                                 />
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
                                     Ícone (URL opcional)
                                 </label>
-                                <div class="flex gap-2">
+                                <div class="relative flex items-center group">
                                     <input
                                         v-model="form.icon"
                                         type="url"
-                                        class="input-field"
+                                        class="w-full bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 rounded-xl pl-4 pr-14 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0 focus:border-primary-500 transition-all shadow-sm dark:shadow-none"
                                         placeholder="https://github.com/favicon.ico"
                                     />
                                     <button
                                         type="button"
                                         @click="fetchFavicon"
-                                        class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors whitespace-nowrap"
+                                        class="absolute right-2 p-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all shadow-lg shadow-primary-500/20 flex items-center justify-center"
                                         title="Detectar ícone automaticamente"
                                     >
-                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <i class="fa-solid fa-wand-magic-sparkles text-[14px]"></i>
                                     </button>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">Deixe em branco para usar ícone padrão</p>
+                                <p class="text-[11px] text-slate-500 ml-1">
+                                    Dica: use o botão mágico para buscar ícone.
+                                </p>
                             </div>
 
                             <!-- Preview -->
                             <div
                                 v-if="form.label || form.icon"
-                                class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl flex items-center gap-3"
+                                class="p-4 bg-slate-50/80 dark:bg-white/5 rounded-xl flex items-center gap-3"
                             >
                                 <div
                                     class="w-12 h-12 rounded-xl bg-white dark:bg-gray-800 shadow flex items-center justify-center"
@@ -110,23 +114,26 @@
                                     </p>
                                 </div>
                             </div>
-
-                            <div class="flex gap-3 pt-4">
-                                <button
-                                    type="button"
-                                    @click="close"
-                                    class="flex-1 py-2.5 px-4 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    class="flex-1 py-2.5 px-4 rounded-xl bg-primary-600 text-white hover:bg-primary-700 transition-colors font-medium shadow-lg shadow-primary-500/30"
-                                >
-                                    Salvar
-                                </button>
-                            </div>
                         </form>
+
+                        <div
+                            class="px-6 py-6 bg-slate-50/50 dark:bg-white/[0.02] border-t border-slate-200/60 dark:border-white/10 flex items-center justify-end gap-3"
+                        >
+                            <button
+                                type="button"
+                                @click="close"
+                                class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="submit"
+                                form="favorite-form"
+                                class="px-8 py-2.5 rounded-xl text-sm font-semibold bg-primary-600 text-white hover:opacity-90 shadow-lg shadow-primary-500/30 transition-all"
+                            >
+                                Salvar
+                            </button>
+                        </div>
                     </div>
                 </Transition>
             </div>

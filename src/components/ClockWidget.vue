@@ -1,11 +1,11 @@
 <template>
-    <div class="text-center mb-10 md:mb-14 animate-fade-in">
+    <div class="text-center mb-12 animate-fade-in">
         <div
-            class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-gray-800 dark:text-white mb-2 tracking-tight font-mono"
+            class="text-[72px] sm:text-[96px] md:text-[120px] font-light tracking-tighter text-slate-900 dark:text-white leading-none"
         >
             {{ currentTime }}
         </div>
-        <div class="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-medium capitalize">
+        <div class="text-xl font-medium text-slate-500 dark:text-slate-400 mt-2 capitalize">
             {{ currentDate }}
         </div>
     </div>

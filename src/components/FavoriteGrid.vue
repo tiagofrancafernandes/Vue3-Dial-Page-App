@@ -1,22 +1,7 @@
 <template>
-    <div :class="{ 'edit-mode': isEditMode }">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <i class="fa-solid fa-star text-yellow-500"></i>
-                Favoritos
-            </h2>
-            <button
-                v-if="!isEditMode"
-                @click="openAddFavorite"
-                class="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium flex items-center gap-1 transition-colors px-3 py-1.5 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20"
-            >
-                <i class="fa-solid fa-plus"></i>
-                <span class="hidden sm:inline">Adicionar</span>
-            </button>
-        </div>
-
+    <div :class="{ 'edit-mode': isEditMode }" class="w-full">
         <div
-            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"
+            class="w-full grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6"
             @dragover.prevent
             @drop="handleDrop"
         >
@@ -28,76 +13,64 @@
                 @dragend="handleDragEnd"
                 @dragover.prevent
                 @drop.stop="handleDropOnItem($event, index)"
-                class="favorite-card"
+                class="favorite-card group flex flex-col items-center gap-3"
                 :class="{ dragging: draggingIndex === index }"
             >
                 <a
                     :href="favorite.url"
                     @click.prevent="!isEditMode && openUrl(favorite.url)"
-                    class="block glass-card p-3 sm:p-4 aspect-square flex flex-col items-center justify-center gap-2 sm:gap-3 relative overflow-hidden group"
+                    class="relative w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-md border border-slate-100 dark:border-slate-700 group-hover:shadow-lg group-hover:-translate-y-1 transition-all"
                 >
-                    <!-- Edit Mode Overlay -->
+                    <img
+                        v-if="favorite.icon"
+                        :src="favorite.icon"
+                        class="w-8 h-8 opacity-80 group-hover:opacity-100 transition-opacity"
+                        @error="handleImageError"
+                    />
+                    <i v-else class="fa-solid fa-globe text-2xl text-slate-400"></i>
+
                     <div
                         v-if="isEditMode"
-                        class="absolute inset-0 bg-primary-500/20 dark:bg-primary-500/30 flex items-center justify-center gap-2 z-10 backdrop-blur-sm"
+                        class="absolute inset-0 rounded-2xl bg-primary-500/20 dark:bg-primary-500/30 flex items-center justify-center gap-2 z-10 backdrop-blur-sm"
                     >
                         <button
                             @click.stop="editFavorite(favorite)"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-800 text-primary-600 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+                            class="w-8 h-8 rounded-full bg-white dark:bg-gray-800 text-primary-600 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
                         >
-                            <i class="fa-solid fa-pen text-xs sm:text-sm"></i>
+                            <i class="fa-solid fa-pen text-xs"></i>
                         </button>
                         <button
                             @click.stop="confirmDelete(favorite)"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-800 text-red-500 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+                            class="w-8 h-8 rounded-full bg-white dark:bg-gray-800 text-red-500 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
                         >
-                            <i class="fa-solid fa-trash text-xs sm:text-sm"></i>
+                            <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </div>
-
-                    <!-- Drag Handle -->
-                    <div v-if="isEditMode" class="absolute top-2 right-2 text-gray-400 cursor-move z-20">
-                        <i class="fa-solid fa-grip-vertical text-xs"></i>
-                    </div>
-
-                    <div
-                        class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-gray-800 shadow-md flex items-center justify-center overflow-hidden group-hover:shadow-lg transition-shadow"
-                    >
-                        <img
-                            v-if="favorite.icon"
-                            :src="favorite.icon"
-                            class="w-6 h-6 sm:w-8 sm:h-8 object-contain"
-                            @error="handleImageError"
-                        />
-                        <i v-else class="fa-solid fa-globe text-xl sm:text-2xl text-gray-400"></i>
-                    </div>
-                    <span
-                        class="text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm text-center line-clamp-2 leading-tight"
-                    >
-                        {{ favorite.label }}
-                    </span>
                 </a>
+                <span
+                    class="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-center line-clamp-1"
+                >
+                    {{ favorite.label }}
+                </span>
             </div>
 
-            <!-- Add Favorite Button -->
             <button
                 v-if="favorites.length < 12 && !isEditMode"
                 @click="openAddFavorite"
-                class="glass-card p-3 sm:p-4 aspect-square flex flex-col items-center justify-center gap-2 sm:gap-3 border-2 border-dashed border-gray-400 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 group"
+                class="group flex flex-col items-center gap-3"
             >
                 <div
-                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center group-hover:scale-110 transition-transform"
+                    class="w-16 h-16 rounded-2xl bg-slate-200/50 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center group-hover:border-primary-500 group-hover:bg-primary-500/5 transition-all"
                 >
-                    <i
-                        class="fa-solid fa-plus text-lg sm:text-xl text-gray-500 dark:text-gray-400 group-hover:text-primary-500"
-                    ></i>
+                    <i class="fa-solid fa-plus text-slate-400 group-hover:text-primary-500"></i>
                 </div>
-                <span class="text-gray-500 dark:text-gray-400 font-medium text-xs sm:text-sm">Adicionar</span>
+                <span class="text-sm font-medium text-slate-400 group-hover:text-primary-500 transition-colors">
+                    New
+                </span>
             </button>
         </div>
 
-        <!-- Empty State -->
-        <div v-if="favorites.length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">
+        <div v-if="favorites.length === 0" class="text-center py-12 text-slate-500 dark:text-slate-400">
             <i class="fa-regular fa-star text-4xl mb-3 opacity-50"></i>
             <p>Nenhum favorito ainda</p>
             <button @click="openAddFavorite" class="mt-2 text-primary-600 hover:underline text-sm">
@@ -167,6 +140,5 @@ const handleDropOnItem = (e, dropIndex) => {
 
 const handleImageError = (e) => {
     e.target.style.display = 'none';
-    e.target.nextElementSibling?.classList.remove('hidden');
 };
 </script>
